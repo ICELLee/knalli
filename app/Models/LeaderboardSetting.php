@@ -17,11 +17,15 @@ class LeaderboardSetting extends Model
         'game_identifiers',
         'categories',
         'providers',
+        'refresh_interval',
+        'third_place_reward',
+        'prize_tiers',
     ];
 
     protected $casts = [
         'start_date' => 'datetime',
         'end_date' => 'datetime',
+        'prize_tiers' => 'array',
     ];
 
     public function entries()

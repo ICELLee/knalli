@@ -12,19 +12,19 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Components\Repeater;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+
 class LeaderboardSettingResource extends Resource
 {
     protected static ?string $model = LeaderboardSetting::class;
 
-
-    protected static ?string $navigationIcon = 'heroicon-o-trophy';
-    protected static ?string $navigationGroup = 'Leaderboard Management';
-
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationGroup = 'Settings';
     public static function form(Form $form): Form
     {
         return $form
@@ -62,6 +62,30 @@ class LeaderboardSettingResource extends Resource
                 Textarea::make('providers')
                     ->label('Providers')
                     ->rows(2),
+                TextInput::make('refresh_interval')
+                    ->label('Refresh-Intervall (Sekunden)')
+                    ->numeric()
+                    ->minValue(1)
+                    ->default(60)
+                    ->required()
+                    ->helperText('Wie oft das Live-Leaderboard neu geladen wird (in Sekunden).'),
+                Repeater::make('prize_tiers')
+                    ->label('Prize Tiers')
+                    ->helperText('Definiere für jeden Rang (Position) den Reward, z.B. 1 => "1000", 2 => "500", 10 => "50"')
+                    ->schema([
+                        TextInput::make('position')
+                            ->label('Platz')
+                            ->numeric()
+                            ->minValue(1)
+                            ->required(),
+                        TextInput::make('reward')
+                            ->label('Prize (Zahl)')
+                            ->numeric()
+                            ->required(),
+                    ])
+                    ->columns(2)
+                    ->orderable('position')      // Optional: Reihenfolge nach Position
+                    ->default([]),
             ]);
     }
 
@@ -76,14 +100,20 @@ class LeaderboardSettingResource extends Resource
                 TextColumn::make('entries_count')
                     ->counts('entries')
                     ->label('Entries'),
+                TextColumn::make('refresh_interval')
+                    ->label('Refresh (s)')
+                    ->sortable(),
             ])
             ->filters([
+                //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
             ]);
     }
 

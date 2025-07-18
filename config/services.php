@@ -13,22 +13,23 @@ return [
     | a conventional file to locate the various service credentials.
     |
     */
+
     'roobet' => [
+        'user_id' => env('ROOBET_USER_ID'),
         'api_key' => env('ROOBET_API_KEY'),
-        'user_id' => env('ROOBET_UID'),
     ],
     'postmark' => [
         'token' => env('POSTMARK_TOKEN'),
+    ],
+
+    'resend' => [
+        'key' => env('RESEND_KEY'),
     ],
 
     'ses' => [
         'key' => env('AWS_ACCESS_KEY_ID'),
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
-    ],
-
-    'resend' => [
-        'key' => env('RESEND_KEY'),
     ],
 
     'slack' => [
